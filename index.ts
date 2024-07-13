@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 import db from "./db.ts";
 const PORT = 3000;
+app.use(express.json());
 
 app.get("/", (req: any, res:any):any =>{
     const query = "SELECT * FROM CUSTOMERS";
@@ -33,6 +34,15 @@ app.get("/:id", (req: any, res:any): any =>{
         if(err) return res.status(500).json(err);
         if(result.length === 0) return res.status(404).json({message: "Customer not found"});
         return res.status(200).json(result[0]);
+    });
+});
+
+app.post("/customer", (req: any, res: any):any =>{
+    const {NAME, AGE, SALARY, CONTACT, ADDRESS} = req.body;
+    const query = "INSERT INTO CUSTOMERS(NAME, AGE, SALARY, CONTACT, ADDRESS) VALUES (?, ?, ?, ?, ?)";
+    db.query(query, [NAME, AGE, SALARY, CONTACT, ADDRESS], (err:any, result:any):any =>{
+        if(err) return res.status(500).json({message: "Internal server error", err: err});
+        return res.status(201).json({message: "Customer created successfully"});
     });
 });
 
