@@ -5,7 +5,7 @@ const PORT = 3000;
 app.use(express.json());
 
 app.get("/", (req: any, res:any):any =>{
-    const query = "SELECT * FROM CUSTOMERS";
+    const query = "SELECT * FROM CUSTOMERS LIMIT 20";
     db.query(query, (err:any, result:any): any =>{
      if(err){
       return res.status(500).json(err);
@@ -47,7 +47,7 @@ app.post("/customer", (req: any, res: any):any =>{
     });
 });
 
-app.post("/update/:id", (req: any, res:any):any =>{
+app.patch("/update/:id", (req: any, res:any):any =>{
     const {id} = req.params;
     const {NAME, AGE, SALARY, CONTACT, ADDRESS} = req.body;
     const query = "UPDATE CUSTOMERS SET NAME = ?, AGE = ?, SALARY = ?, CONTACT = ?, ADDRESS = ? WHERE ID = ?";
