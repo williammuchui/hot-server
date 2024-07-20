@@ -1,19 +1,32 @@
-const express = require("express");
-const app = express();
+import express,{type Request, type Response , type Application} from 'express';
+import authorization, {generateToken} from './middlewares/authorization.ts';
+import dotenv from 'dotenv';
 import db from "./db.ts";
-const PORT = 3000;
+
+dotenv.config();
+const app: Application = express();
+const PORT = process.env.PORT;
 app.use(express.json());
 
-app.get("/", (req: any, res:any):any =>{
+app.post("/generate-token", (req: Request, res: Response): void =>{
+    const { username } = req.body;
+    if(!username) res.status(400).json({message: "username Required!"});
+
+    const payload = {username};
+    const token = generateToken(payload);
+    res.json({token});
+})
+
+app.get("/", authorization,(req: Request, res:Response):void =>{
     const query = "SELECT * FROM CUSTOMERS LIMIT 20";
     db.query(query, (err:any, result:any): any =>{
      if(err){
-      return res.status(500).json(err);
+    res.status(500).json(err);
      }
-    return res.status(200).json(result);
+    res.status(200).json(result);
     });
 });
-app.get("/customer/:id", (req:any, res: any): any =>{
+app.get("/customer/:id", authorization,(req:Request, res: Response): any =>{
     const {id} = req.params;
     const query = "SELECT * FROM CUSTOMERS WHERE ID = ?";
     db.query(query, [id], (err: any, result: any): any =>{
@@ -27,7 +40,7 @@ app.get("/customer/:id", (req:any, res: any): any =>{
     });
 });
 
-app.get("/:id", (req: any, res:any): any =>{
+app.get("/:id", authorization,(req: Request, res:Response): any =>{
     const {id} = req.params;
     const query = "SELECT * FROM CUSTOMERS WHERE ID = ?";
     db.query(query, [id], (err:any, result:any):any =>{
@@ -37,7 +50,7 @@ app.get("/:id", (req: any, res:any): any =>{
     });
 });
 
-app.post("/customer", (req: any, res: any):any =>{
+app.post("/customer", authorization,(req: Request, res: Response):any =>{
     const {NAME, AGE, SALARY, CONTACT, ADDRESS} = req.body;
     const query = "INSERT INTO CUSTOMERS(NAME, AGE, SALARY, CONTACT, ADDRESS) VALUES (?, ?, ?, ?, ?)";
     db.query(query, [NAME, AGE, SALARY, CONTACT, ADDRESS], (err:any, result:any):any =>{
@@ -47,7 +60,7 @@ app.post("/customer", (req: any, res: any):any =>{
     });
 });
 
-app.patch("/update/:id", (req: any, res:any):any =>{
+app.patch("/update/:id", authorization, (req: Request, res:Response):any =>{
     const {id} = req.params;
     const {NAME, AGE, SALARY, CONTACT, ADDRESS} = req.body;
     const query = "UPDATE CUSTOMERS SET NAME = ?, AGE = ?, SALARY = ?, CONTACT = ?, ADDRESS = ? WHERE ID = ?";
@@ -58,7 +71,7 @@ app.patch("/update/:id", (req: any, res:any):any =>{
     });
 });
 
-app.delete("/delete/:id", (req: any, res: any): any =>{
+app.delete("/delete/:id", authorization, (req: Request, res: Response): any =>{
     const {id} = req.params;
     const query = "DELETE FROM CUSTOMERS WHERE ID = ?";
     db.query(query, [id], (err:any, result:any): any =>{
@@ -69,4 +82,4 @@ app.delete("/delete/:id", (req: any, res: any): any =>{
 });
 
 
-app.listen(PORT, ()=> console.log("Server listening at port 3000"));
+app.listen(PORT, ()=> console.log(`Server listening at port ${PORT}`));
