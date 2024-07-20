@@ -36,12 +36,13 @@ Response:
 }
 ```
 
-The Token is used in all requests in the Headers Auth Section
+The Token is used in all requests in the Headers Auth Section.
+Avoid using apostrophes on the token. (Applies to Insomnia users.)  
 
 ```bash
-TOKEN: " eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzIxNDc1MTg0LCJleHAiOjE3MjE0Nzg3ODR9.s-5E67LYn_dfIg6O-LXO0reSex0OU6R5XHyIK7lsPYE"
+TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzIxNDc1MTg0LCJleHAiOjE3MjE0Nzg3ODR9.s-5E67LYn_dfIg6O-LXO0reSex0OU6R5XHyIK7lsPYE
 
-PREFIX: "Bearer"
+PREFIX: Bearer
 ```
 
 ## Get_all_customer_records
