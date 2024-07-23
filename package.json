@@ -2,6 +2,9 @@
   "name": "mysql-express",
   "module": "index.ts",
   "type": "module",
+  "scripts":{
+      "start-server": "bun run index.ts",
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
